@@ -1,0 +1,59 @@
+version: '3'
+
+services:
+  geoserver:
+    image: kartoza/geoserver
+    restart: always
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./geoserver_data:/opt/geoserver/data_dir
+    environment:
+      GEOSERVER_ADMIN_USER: admin
+      GEOSERVER_ADMIN_PASSWORD: geoserver
+    networks:
+      - mynetwork
+
+
+  pgdb:
+    image: postgis/postgis:latest
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: myrootpassword
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./pgdb_data:/var/lib/postgresql/data
+    networks:
+      - mynetwork
+
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile    
+    restart: always
+    depends_on:
+      - geoserver
+      - pgdb
+    ports:
+      - "83:80"
+      - "445:443"
+    volumes:
+      - ./src:/var/www/html
+      - ./certs:/etc/apache2/ssl
+    environment:
+      GEOSERVER_URL: http://geoserver:8080/geoserver
+      POSTGRES_HOST: pgdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: myrootpassword
+      HTTPS_CERT_FILE: /etc/apache2/ssl/server.crt
+      HTTPS_KEY_FILE: /etc/apache2/ssl/server.key
+
+volumes:
+  pgdb_data:
+  geoserver_data:
+networks:
+  mynetwork:
