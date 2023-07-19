@@ -1,53 +1,65 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Web Mapping Tutorial - Part 3</title>
+  <title>Web Mapping Tutorial - Part 1</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-measure/dist/leaflet-measure.css" />
   <style>
     #map {
-      height: 400px;
+      height: 100vh;
     }
   </style>
 </head>
 <body>
-  <h1>Web Mapping Tutorial - Part 3</h1>
+  <h1>Web Mapping Tutorial - Part 1</h1>
   <div id="map"></div>
-  <div id="distance-measure">
-    <h3>Distance Measurement</h3>
-    <button id="measureButton">Measure Distance</button>
-    <p id="distanceResult"></p>
-  </div>
 
   <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-measure/2.1.4/leaflet-measure.min.js"></script>
+  <script src="https://unpkg.com/leaflet-measure/dist/leaflet-measure.js"></script>
   <script>
-    var map = L.map('map').setView([51.505, -0.09], 13);
+    var map = L.map('map').setView([25.505, 92.05], 8);
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    // Base Layer - OpenStreetMap
+    var openStreetMapLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
+    });
+
+    // Adding a Marker
+    var marker = L.marker([25.505, 92.05]);
+    marker.bindPopup("<b>Hello!</b><br>This is a custom marker.").openPopup();
+
+    // Adding a WMS Layer
+    var wmsLayerUrl = 'https://www.nesdr.gov.in/igistile/NER_Land_Use_50K_QC_passWS/wms';
+    var wmsLayer = L.tileLayer.wms(wmsLayerUrl, {
+      layers: 'NER_LULC_50K_1st_CYCLE', // Change this to the specific layer you want to display from your WMS service
+      format: 'image/png',
+      transparent: true,
+      attribution: 'WMS data &copy; <a href="URL_TO_YOUR_DATA_SOURCE">Data Source</a>'
+    });
+
+    // Adding all the layers to the map
+    openStreetMapLayer.addTo(map);
+    marker.addTo(map);
+
+    // Group the overlay layers
+    var overlayLayers = {
+      "Marker": marker,
+      "WMS Layer": wmsLayer
+    };
+
+    // Layer control
+    L.control.layers(null, overlayLayers).addTo(map);
+
+    // Measure control
+    L.control.measure({
+      primaryLengthUnit: 'meters', // You can change the primary length unit as per your preference
+      secondaryLengthUnit: 'kilometers', // You can change the secondary length unit as per your preference
+      primaryAreaUnit: 'sqmeters', // You can change the primary area unit as per your preference
+      secondaryAreaUnit: 'hectares' // You can change the secondary area unit as per your preference
     }).addTo(map);
-
-    var measureControl = L.control.measure({
-      position: 'topleft',
-      primaryLengthUnit: 'meters',
-      secondaryLengthUnit: 'kilometers',
-      primaryAreaUnit: 'sqmeters',
-      secondaryAreaUnit: 'hectares',
-    });
-    measureControl.addTo(map);
-
-    document.getElementById('measureButton').addEventListener('click', function () {
-      map.pm.startMeasure();
-    });
-
-    map.on('pm:measure', function (e) {
-      var measurements = e.measurements;
-      var resultString = '';
-      for (var measurement in measurements) {
-        resultString += measurement + ': ' + measurements[measurement].toFixed(2) + '<br>';
-      }
-      document.getElementById('distanceResult').innerHTML = resultString;
-    });
   </script>
 </body>
 </html>
+
+
+<!-- Modify the unit of measurement of the plugin -->

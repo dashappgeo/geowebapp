@@ -1,21 +1,21 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Web Mapping Tutorial - Part 1</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet-measure/dist/leaflet-measure.css" />
-  <style>
-    #map {
-      height: 100vh;
-    }
-  </style>
-</head>
-<body>
-  <h1>Web Mapping Tutorial - Part 1</h1>
-  <div id="map"></div>
-
-  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-  <script src="https://unpkg.com/leaflet-measure/dist/leaflet-measure.js"></script>
+  <head>
+    <title>Web Mapping Tutorial - Part 1</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-measure/dist/leaflet-measure.css" />
+    <style>
+      #map {
+        height: 100vh;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Web Mapping Tutorial - Part 1</h1>
+    <div id="map"></div>
+  
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-measure/dist/leaflet-measure.js"></script>
   <script>
     var map = L.map('map').setView([25.505, 92.05], 8);
 
@@ -57,6 +57,17 @@
       primaryAreaUnit: 'sqmeters', // You can change the primary area unit as per your preference
       secondaryAreaUnit: 'hectares' // You can change the secondary area unit as per your preference
     }).addTo(map);
+
+    // Click event to log coordinates to console
+    map.on('click', function (e) {
+      console.log('Latitude: ' + e.latlng.lat + ', Longitude: ' + e.latlng.lng);
+    });
+
+    // Right-click event to add marker
+    map.on('contextmenu', function (e) {
+      var newMarker = L.marker(e.latlng).addTo(map);
+      newMarker.bindPopup("New Marker").openPopup();
+    });
   </script>
 </body>
 </html>
