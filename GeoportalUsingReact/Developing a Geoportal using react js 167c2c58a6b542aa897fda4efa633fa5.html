@@ -1,0 +1,912 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Developing a Geoportal using react js</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+    margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-interactiveBlue { background-color: rgba(35, 131, 226, .07); }
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-translucentGray { background-color: rgba(255, 255, 255, 0.0375); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+.select-value-color-pageGlass { background-color: undefined; }
+.select-value-color-washGlass { background-color: undefined; }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="167c2c58-a6b5-42aa-897f-da4efa633fa5" class="page sans"><header><h1 class="page-title">Developing a Geoportal using react js</h1><p class="page-description"></p></header><div class="page-body"><p id="9f68b0fc-35ba-411f-add0-4aaae6553a42" class="">
+</p><p id="8019dd31-0eee-405a-ac39-e13990f553b3" class="">Title: Developing a maps application using Reactjs and open source tools</p><p id="fdb6f426-64d1-46a9-bdf6-8e3b6b3d1142" class="">Web-maps are becoming more and more popular as a mode of sharing data and information. Open source tools have made the development process easy and more accessible. The completed project is also made available in the <a href="https://www.notion.so/New-Emojis-Don-t-Render-d1af15535879461b83a7eed1fe1edebb?pvs=21">github repository</a></p><p id="4a97ed60-0614-48b8-aa16-7f59fbe745aa" class="">In this tutorial you will learn the following</p><ul id="3df614cc-b508-46d9-a917-c3c6b2baa78b" class="bulleted-list"><li style="list-style-type:disc">Setting up a new react geoportal project</li></ul><ul id="6e7d9e7d-e201-4d3b-9382-5c981c75a3f3" class="bulleted-list"><li style="list-style-type:disc">Create a basic wire frame for the geoportal </li></ul><ul id="249ff78d-ed69-4881-8312-8928063e0f5c" class="bulleted-list"><li style="list-style-type:disc">Create different components of your geoportal</li></ul><ul id="31121d48-cc04-4ddd-81ce-b057450c57ba" class="bulleted-list"><li style="list-style-type:disc">Setup a redux store for state sharing between components</li></ul><h3 id="57d99d86-f8d7-4efd-954e-ac310145d6db" class="">Setting up a new geoportal project</h3><p id="c0af3a6c-4e68-45f6-8d5d-c36c45adad7e" class="">If you have installed nodejs and npm, you already have the basic setup required to develop the geoportal. You can check the installation by entering the following command in windows command prompt or terminal in case of mac or linux. Incase you have not setup, please follow the link to complete the setup and then proceed.</p><pre id="686764c4-da3a-4939-bdb4-b97e10299638" class="code"><code>node -v
+npm -v</code></pre><p id="564f2dc1-3b21-4c1b-aa58-99e279fca87f" class="">React based apps a prerequisite of nodejs and npm to be installed beforehand. React app can be setup using command. On successful execution of the command, the output will be shown as below.</p><pre id="60e639d3-2f75-4017-b2fe-90aadac30dde" class="code"><code>npx create-react-app geoportal</code></pre><div id="8dc4b1a6-b4a2-4c58-87e7-2028365281db" class="column-list"><div id="7044717f-5d7c-4a80-b9c7-242f9ea5aea1" style="width:50%" class="column"><figure id="f42bbe67-ed9e-42fc-acd5-41b78fe6be8e" class="image"><a href="Developing%20a%20Geoportal%20using%20react%20js%20167c2c58a6b542aa897fda4efa633fa5/Untitled.png"><img style="width:336px" src="Developing%20a%20Geoportal%20using%20react%20js%20167c2c58a6b542aa897fda4efa633fa5/Untitled.png"/></a></figure></div><div id="4a9cf9dc-b376-4bb0-a9d7-23fd07ce58df" style="width:50%" class="column"><figure id="c2aceb09-3544-4df7-9806-a27db8df29ae" class="image"><a href="Developing%20a%20Geoportal%20using%20react%20js%20167c2c58a6b542aa897fda4efa633fa5/Untitled%201.png"><img style="width:587px" src="Developing%20a%20Geoportal%20using%20react%20js%20167c2c58a6b542aa897fda4efa633fa5/Untitled%201.png"/></a></figure></div></div><p id="cd96386d-2a31-41dc-a6bc-3f6b62b44c85" class="">Once the application is setup. You may navigate to the geoportal directory and start installing the required packages. The package dependencies required for the development of the geoportal are as follows:</p><ul id="d45a078a-3bfc-435c-a5e3-23aad2fe922f" class="bulleted-list"><li style="list-style-type:disc">react-leaflet (For building interactive maps)</li></ul><ul id="5bc27555-1c36-4681-a2f5-1777f758277c" class="bulleted-list"><li style="list-style-type:disc">react-bootstrap &amp; bootstrap (UI components)</li></ul><pre id="319eab98-97ef-4254-acde-3bf3d7ee9030" class="code"><code>cd geoportal
+npm install react-leaflet leaflet
+npm install react-bootstrap bootstrap</code></pre><p id="e600d1b6-fd59-4b04-9b8c-033d08148350" class="">Once the installation is successful, run the following command to start the application. On successful execution of the command. </p><pre id="956f837c-a075-473d-b066-bdc573fec951" class="code"><code>npm start</code></pre><div id="a28ac1d5-6882-46e2-9973-595fe2b031d7" class="column-list"><div id="0e0343d4-7de9-44cb-8bee-ef02fa3fcc11" style="width:50%" class="column"><figure id="3367951f-7316-441e-bad1-c3c1557f6879" class="image"><a href="Developing%20a%20Geoportal%20using%20react%20js%20167c2c58a6b542aa897fda4efa633fa5/Untitled%202.png"><img style="width:384px" src="Developing%20a%20Geoportal%20using%20react%20js%20167c2c58a6b542aa897fda4efa633fa5/Untitled%202.png"/></a></figure></div><div id="005d0f9a-0fc8-487c-b22e-1645937da4c9" style="width:50%" class="column"><figure id="583f1aa1-f2d6-4a63-9a96-f6becbdc1403" class="image"><a href="Developing%20a%20Geoportal%20using%20react%20js%20167c2c58a6b542aa897fda4efa633fa5/Untitled%203.png"><img style="width:384px" src="Developing%20a%20Geoportal%20using%20react%20js%20167c2c58a6b542aa897fda4efa633fa5/Untitled%203.png"/></a></figure></div></div><p id="2a278b77-f32e-4d54-aa2d-73dcaa564206" class="">The next step into start the Open the directory in your favourite code editor (vscode in my case) and navigate to src folder and make a directory to store all your components by typing the following command </p><pre id="1764fca0-1192-4a2a-8747-d375bec3a8f3" class="code"><code>cd src
+mkdir components</code></pre><h2 id="f4a813c8-4ca0-4c2a-97fb-531cb31784dc" class="">Creating basic frame of geoportal</h2><p id="a1499965-b85f-42a9-b90e-02c6b4ac79a7" class="">The applications comprises of three components</p><ul id="9adc16cd-0777-4a07-b12b-177f1934efb3" class="bulleted-list"><li style="list-style-type:disc">Header</li></ul><ul id="3f1b667d-3fea-46f5-b009-4057e4c033ef" class="bulleted-list"><li style="list-style-type:disc">Map viewer</li></ul><ul id="c10d40e7-d314-447c-9ec2-943ec7415500" class="bulleted-list"><li style="list-style-type:disc">Layer tree </li></ul><ul id="0415b159-58fb-4423-9619-0aed30d0f064" class="bulleted-list"><li style="list-style-type:disc">Infobox</li></ul><p id="e44352a3-8bbf-4e06-b361-599293b0cc0a" class="">Create these components by writing the following commands:</p><pre id="df18d420-110e-438b-8ed3-42c1a3fc21b2" class="code"><code>cd components
+touch Header.js
+touch Map.js
+touch Info.js</code></pre><p id="92053903-a0f6-4a12-8221-719ef06b1cad" class="">Add the following code in the respective components</p><p id="c46ef88a-269b-4eca-a5ee-7b147717773d" class="">/src/components/Header.js</p><pre id="e1fc8cd7-aa29-4cec-a1c8-121b3bb0fb8f" class="code"><code>import React from &quot;react&quot;;
+import Container from &quot;react-bootstrap/Container&quot;;
+import Navbar from &quot;react-bootstrap/Navbar&quot;;
+
+const Header = () =&gt; {
+  return (
+    &lt;&gt;
+      &lt;Navbar bg=&quot;dark&quot; variant=&quot;dark&quot;&gt;
+        &lt;Container&gt;
+          &lt;Navbar.Brand href=&quot;#home&quot;&gt;
+            &lt;img
+              alt=&quot;&quot;
+              src=&quot;/logo192.png&quot;
+              width=&quot;30&quot;
+              height=&quot;30&quot;
+              className=&quot;d-inline-block align-top&quot;
+            /&gt;
+            React Geoportal
+          &lt;/Navbar.Brand&gt;
+        &lt;/Container&gt;
+      &lt;/Navbar&gt;
+    &lt;/&gt;
+  );
+};
+
+export default Header;</code></pre><p id="d86514da-d867-4d07-b209-297da0f48c4a" class="">/src/components/Map.js</p><pre id="0c0396b1-1b3e-4f64-ab4a-ad21b3b97af0" class="code"><code>import React from &quot;react&quot;;
+import { MapContainer, TileLayer } from &#x27;react-leaflet&#x27;
+import &#x27;leaflet/dist/leaflet.css&#x27;;
+
+const Map = () =&gt; {
+  return (
+    &lt;div&gt;
+      {&quot; &quot;}
+      &lt;MapContainer center={[25 ,92]} zoom={7} scrollWheelZoom={true}&gt;
+        &lt;TileLayer
+          attribution=&#x27;&amp;copy; &lt;a href=&quot;https://www.openstreetmap.org/copyright&quot;&gt;OpenStreetMap&lt;/a&gt; contributors&#x27;
+          url=&quot;https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png&quot;
+        /&gt;
+      &lt;/MapContainer&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default Map;</code></pre><p id="0cba3c2f-16f0-462c-8ef4-2219cb62e2aa" class="">/src/components/LayerTree.js</p><pre id="2631604f-d5fb-470c-ac69-a9dd548e7cd8" class="code"><code>import React from &quot;react&quot;;
+import ListGroup from &quot;react-bootstrap/ListGroup&quot;;
+import Form from &quot;react-bootstrap/Form&quot;;
+
+const LayerTree = () =&gt; {
+  return (
+    &lt;ListGroup&gt;
+      &lt;ListGroup.Item&gt;
+        &lt;Form.Check
+          type=&quot;checkbox&quot;
+          id=&quot;disabledFieldsetCheck&quot;
+          label=&quot;Layer 1&quot;
+        /&gt;
+      &lt;/ListGroup.Item&gt;
+      &lt;ListGroup.Item&gt;
+        &lt;Form.Check
+          type=&quot;checkbox&quot;
+          id=&quot;disabledFieldsetCheck&quot;
+          label=&quot;Layer 2&quot;
+        /&gt;
+      &lt;/ListGroup.Item&gt;
+      &lt;ListGroup.Item&gt;
+        &lt;Form.Check
+          type=&quot;checkbox&quot;
+          id=&quot;disabledFieldsetCheck&quot;
+          label=&quot;Layer 3&quot;
+        /&gt;
+      &lt;/ListGroup.Item&gt;
+    &lt;/ListGroup&gt;
+  );
+};
+
+export default LayerTree;</code></pre><p id="41415985-b4b1-4d65-98e2-7f3986965306" class="">/src/components/Info.js</p><pre id="004d5788-81b7-4e3d-8be6-0cfe311063e7" class="code"><code>import React from &#x27;react&#x27;
+
+const InfoBox = () =&gt; {
+  return (
+    &lt;div&gt;InfoBox&lt;/div&gt;
+  )
+}
+
+export default InfoBox</code></pre><p id="163df8ed-f44c-41c5-88f1-d4e448bc744c" class="">/src/index.css</p><pre id="ab09bb0b-e0f4-4f8b-924d-4fe49e0c73a9" class="code"><code>.leaflet-container {
+  height: 90vh;
+  width: 100%;
+}</code></pre><figure id="2948513b-e9bb-410e-a3ad-0a5077a931da" class="image"><a href="Developing%20a%20Geoportal%20using%20react%20js%20167c2c58a6b542aa897fda4efa633fa5/Untitled%204.png"><img style="width:1920px" src="Developing%20a%20Geoportal%20using%20react%20js%20167c2c58a6b542aa897fda4efa633fa5/Untitled%204.png"/></a></figure><h2 id="8b46f198-72d4-4fc3-b9e9-7e68bc6ee60f" class="">Setting up of Redux-toolkit for state management</h2><p id="d469fb67-74d6-45f3-8573-fbb692f3e043" class="">Inside the public folder create a file called data.json and load data into it. This file will contain list of all the spatial layers published in the public server:</p><pre id="bba6353f-3880-4211-afef-7545cdadeac7" class="code"><code>cd ../public
+touch Data.json</code></pre><p id="c8569535-b447-4edd-b94d-cfe060c8700b" class="">/public/data.json</p><pre id="bf9c36d3-b1a1-4fbf-80b7-de04482af7bc" class="code"><code>[
+  {
+    &quot;id&quot;: 1,
+    &quot;text&quot;: &quot;State Boundary&quot;,
+    &quot;show&quot;: true,
+    &quot;class&quot;: &quot;Administrative&quot;,
+    &quot;layer&quot;: &quot;asdma:assam_state_boundary&quot;,
+    &quot;info&quot;: &quot;This layer displays the state boundaries of Assam.&quot;,
+    &quot;link&quot;: &quot;https://geoserver.nesdr.gov.in/geoserver/wms&quot;
+  },
+  {
+    &quot;id&quot;: 2,
+    &quot;text&quot;: &quot;District Boundary&quot;,
+    &quot;show&quot;: true,
+    &quot;class&quot;: &quot;Administrative&quot;,
+    &quot;layer&quot;: &quot;asdma:asssam_district_boundary&quot;,
+    &quot;link&quot;: &quot;https://geoserver.nesdr.gov.in/geoserver/asdma/wms&quot;,
+    &quot;info&quot;: &quot;This layer displays the district boundaries of Assam.&quot;,
+    &quot;attributes&quot;: [
+      {
+        &quot;value&quot;: &quot;dtname&quot;,
+        &quot;text&quot;: &quot;District Name&quot;
+      },
+      {
+        &quot;value&quot;: &quot;area&quot;,
+        &quot;text&quot;: &quot;Area&quot;
+      }
+    ],
+    &quot;minZoom&quot;: 10
+  },
+  {
+    &quot;id&quot;: 3,
+    &quot;text&quot;: &quot;Revenue Circle&quot;,
+    &quot;show&quot;: false,
+    &quot;class&quot;: &quot;Administrative&quot;,
+    &quot;layer&quot;: &quot;FLEWS:assam_rc_light&quot;,
+    &quot;link&quot;: &quot;https://geoserver.nesdr.gov.in/geoserver/FLEWS/wms&quot;,
+    &quot;info&quot;: &quot;This layer displays the revenue circle boundaries of Assam.&quot;,
+    &quot;attributes&quot;: [
+      {
+        &quot;value&quot;: &quot;dtname&quot;,
+        &quot;text&quot;: &quot;District Name&quot;
+      },
+      {
+        &quot;value&quot;: &quot;area&quot;,
+        &quot;text&quot;: &quot;Area&quot;
+      }
+    ]
+  }
+]</code></pre><p id="bef6a5a4-57b1-488d-9619-24bb050349fe" class="">In order to communicate information between the components, the next step is to create a state management system using redux-toolkit for maintaining the state of the layers that are being checked and unchecked in the layer tree. The map should accordingly display the checked and unchecked layers. Run the following command to install the redux-toolkit.</p><pre id="a79139eb-4100-424c-bb59-002505eba622" class="code"><code># NPM
+npm install @reduxjs/toolkit</code></pre><p id="260d2215-fc7f-4f1b-891f-5bbcb496e6dc" class="">On successful installation of the package. You will be required to setup the broiler plate for implementing the redux store. You will be required to create the following files:</p><p id="476d32c8-b842-4474-9f8c-66aa8f627a2d" class="">From the project folder in the terminal. Execute the command below to create these files</p><ul id="22fbe177-ab13-4cbf-a699-7ac3f62f2907" class="bulleted-list"><li style="list-style-type:disc">store <p id="7ec41228-94cf-4304-beeb-160e4641ce17" class=""><em>/src/app/store.js
+</em></p><pre id="0b93ef14-449d-48b4-a52d-d23ad89486bd" class="code"><code>cd src
+mkdir app
+touch store.js</code></pre></li></ul><p id="ffd2681f-e912-4b6a-b032-dd2e4fe0ea6c" class="">Enter the following code in store</p><pre id="9a4fe1fb-1a8d-4b53-8d7c-ed27668d4d5d" class="code"><code>import { configureStore } from &#x27;@reduxjs/toolkit&#x27;;
+import counterReducer from &#x27;../features/counter/counterSlice&#x27;;
+import layerReducer from &#x27;../features/layer/layerSlice&#x27;;
+
+export const store = configureStore({
+  reducer: {
+    counter: counterReducer,
+    layer:layerReducer
+  },
+});</code></pre><ul id="2ab68eb8-f426-4662-ae39-018292da8c57" class="bulleted-list"><li style="list-style-type:disc">slice <p id="0fa552d2-20d1-4102-9299-c495ebaa922e" class=""><em>/src/features/layerSlice.js</em></p><pre id="9495f67a-b1b3-4279-ab00-557710059392" class="code"><code>cd src
+mkdir features
+touch layerSlice.js</code></pre></li></ul><p id="feb907f5-f6c4-4a8e-984b-b029b6b08527" class="">Enter the following code in layerSlice:</p><p id="dc86cd6b-9b6b-4daf-830f-41c59b0965d0" class="">The following code creates reducers for the actions performed in the layer tree component. This will help in toggling between the layers.</p><pre id="843a44b2-e375-44e2-a39c-b017aa350adc" class="code"><code>import { createSlice } from &#x27;@reduxjs/toolkit&#x27;
+import { layer } from &quot;../../config&quot;;
+
+const initialState = layer;
+
+const layerSlice = createSlice({
+  name: &#x27;layer&#x27;,
+  initialState,
+  reducers: {
+
+    setInitialState:(state, action)=&gt;{
+        console.log(&quot;Test&quot;)
+        state=action.payload
+    },
+    changeVisibility:(state,action)=&gt;{
+
+            state[action.payload.id].show = action.payload.show;
+
+    }
+  }
+});
+
+export const { setInitialstate, changeVisibility} = layerSlice.actions
+
+export const selectLayerDataSet = (state) =&gt; state.layer;
+
+export default layerSlice.reducer</code></pre><p id="53c20aad-508b-475b-96fa-af5bea81e5e2" class="">Update /src/components/layertree.js to connect it with Redux stores</p><pre id="30124810-331a-49df-969a-06151bcada8a" class="code"><code>import React from &quot;react&quot;;
+import ListGroup from &quot;react-bootstrap/ListGroup&quot;;
+import Form from &quot;react-bootstrap/Form&quot;;
+import { useDispatch,useSelector } from &quot;react-redux&quot;;
+import { increment, setInitialstate, changeVisibility,selectLayerDataSet } from &quot;../features/layer/layerSlice&quot;;
+import { useEffect, useState } from &quot;react&quot;;
+const LayerTree = () =&gt; {
+  
+  const dispatch = useDispatch()
+
+  const state = useSelector(selectLayerDataSet);
+
+  const toggleLayer = (id, e) =&gt; {
+      dispatch(changeVisibility({ ...state, id: id - 1, show: e }));
+  };
+
+
+  //Updating initial redux state on load
+  useEffect(() =&gt; {
+    fetch(&quot;./Data.json&quot;)
+    .then(response =&gt; response.json())
+    .then(data =&gt; console.log(data));
+
+  }, []); 
+
+ return (
+    &lt;ListGroup&gt;
+      {state.map((layer)=&gt;{
+  
+        &lt;p&gt;
+          {layer.lext}
+        &lt;/p&gt;
+      })}
+      &lt;p&gt;Layer Tree&lt;/p&gt;
+      {state.map((task, index) =&gt; (
+        // &lt;Layer key={index} task={task} showLayer ={showLayer}/&gt;
+        &lt;ListGroup.Item&gt;
+        &lt;Form.Check
+          type=&quot;checkbox&quot;
+          id={1}
+          label={task.text}
+          defaultChecked={task.show}
+          onClick={(e) =&gt; toggleLayer(1, e.target.checked)}
+        /&gt;
+      &lt;/ListGroup.Item&gt;
+        ))}
+
+    &lt;/ListGroup&gt;
+  );
+};
+
+export default LayerTree;</code></pre></div></article></body></html>
