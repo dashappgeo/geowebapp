@@ -10,19 +10,19 @@ To run the app locally on your machine, follow these steps:
 
 - Node.js: Make sure you have Node.js installed on your machine. You can download it from the official website: [Node.js](https://nodejs.org/).
 
-- npx create-expo-app SurveyApp
+- `npx create-expo-app SurveyApp`
 
-- cd SurveyApp
+- `cd SurveyApp`
 
 2. Install the project dependencies:
 
-- npm install @react-navigation/native
+- `npm install @react-navigation/native`
 
-- npm install @react-navigation/native-stack
+- `npm install @react-navigation/native-stack`
 
-- npm install expo-location
+- `npm install expo-location`
 
-- npm install expo-camera
+- `npm install expo-camera`
 
 ### Running the App
 
