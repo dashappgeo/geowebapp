@@ -10,8 +10,9 @@ To run the app locally on your machine, follow these steps:
 
 - Node.js: Make sure you have Node.js installed on your machine. You can download it from the official website: [Node.js](https://nodejs.org/).
 
-- Expo CLI: Install Expo CLI globally on your machine using npm:
+- npx create-expo-app SurveyApp
 
+- cd SurveyApp
 
 2. Install the project dependencies:
 
