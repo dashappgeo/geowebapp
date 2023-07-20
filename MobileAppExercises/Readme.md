@@ -16,8 +16,13 @@ To run the app locally on your machine, follow these steps:
 
 2. Install the project dependencies:
 
-- npm install 
+- npm install @react-navigation/native
 
+- npm install @react-navigation/native-stack
+
+- npm install expo-location
+
+- npm install expo-camera
 
 ### Running the App
 
@@ -50,9 +55,5 @@ If you find any issues or want to contribute to this project, feel free to creat
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgments
-
-This app was created using Expo and React Native. Special thanks to the Expo team and the React Native community for their amazing work and support.
 
 Happy coding! 🚀
