@@ -28,7 +28,7 @@ To run the app locally on your machine, follow these steps:
 
 To start the app, run the following command:
 
-- npx expo start
+- `npx expo start`
 
 
 

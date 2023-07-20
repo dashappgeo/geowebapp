@@ -1,10 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { ScrollView, View, Text, TextInput, Button, StyleSheet, Alert, Image } from 'react-native';
-import * as Location from 'expo-location';
-import { Camera } from 'expo-camera';
+import React, { useState, useEffect } from "react";
+import {
+  ScrollView,
+  View,
+  Text,
+  TextInput,
+  Button,
+  StyleSheet,
+  Alert,
+  Image,
+} from "react-native";
+import * as Location from "expo-location";
+import { Camera } from "expo-camera";
 
 const DataField = () => {
-  const [name, setName] = useState('');
+  const [name, setName] = useState("");
   const [location, setLocation] = useState(null);
   const [photoUri, setPhotoUri] = useState(null);
   const [cameraPermission, setCameraPermission] = useState(null);
@@ -19,14 +28,14 @@ const DataField = () => {
 
   const getLocationPermission = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== 'granted') {
-      Alert.alert('Permission to access location was denied.');
+    if (status !== "granted") {
+      Alert.alert("Permission to access location was denied.");
     }
   };
 
   const getCameraPermission = async () => {
     let { status } = await Camera.requestCameraPermissionsAsync();
-    setCameraPermission(status === 'granted');
+    setCameraPermission(status === "granted");
   };
 
   const getCoordinates = async () => {
@@ -34,8 +43,8 @@ const DataField = () => {
       let location = await Location.getCurrentPositionAsync({});
       setLocation(location.coords);
     } catch (error) {
-      console.error('Error fetching location:', error);
-      Alert.alert('Error fetching location.');
+      console.error("Error fetching location:", error);
+      Alert.alert("Error fetching location.");
     }
   };
 
@@ -48,9 +57,9 @@ const DataField = () => {
 
   const handleSubmit = () => {
     // You can perform any action with the collected data here
-    console.log('Collected data:', name);
-    console.log('Coordinates:', location);
-    console.log('Photo URI:', photoUri);
+    console.log("Collected data:", name);
+    console.log("Coordinates:", location);
+    console.log("Photo URI:", photoUri);
     // Add additional logic for storing or processing the data as needed
   };
 
@@ -68,7 +77,9 @@ const DataField = () => {
         )}
       </View>
       <Button title="Take Photo" onPress={takePhoto} />
-      {photoUri && <Image source={{ uri: photoUri }} style={styles.photoPreview} />}
+      {photoUri && (
+        <Image source={{ uri: photoUri }} style={styles.photoPreview} />
+      )}
       <Text style={styles.label}>Name:</Text>
       <TextInput
         style={styles.input}
@@ -76,8 +87,12 @@ const DataField = () => {
         onChangeText={(text) => setName(text)}
         placeholder="Enter your name"
       />
-      <Button title="Get Coordinates" onPress={getCoordinates} />
-      <Button title="Submit" onPress={handleSubmit} />
+      <Button
+        style={styles.input}
+        title="Get Coordinates"
+        onPress={getCoordinates}
+      />
+      <Button style={styles.input} title="Submit" onPress={handleSubmit} />
     </ScrollView>
   );
 };
@@ -87,28 +102,28 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   cameraContainer: {
-    width: '100%',
+    width: "100%",
     height: 300,
     marginBottom: 16,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   camera: {
     flex: 1,
   },
   photoPreview: {
-    width: '100%',
+    width: "100%",
     height: 200,
     marginBottom: 16,
   },
   label: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 8,
   },
   input: {
     height: 40,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderRadius: 8,
     padding: 8,
     marginBottom: 16,

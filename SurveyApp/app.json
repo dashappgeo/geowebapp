@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "01_VasicDetails",
-    "slug": "01_VasicDetails",
+    "name": "Survey App",
+    "slug": "SurveyApp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",

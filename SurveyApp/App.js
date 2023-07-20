@@ -1,10 +1,10 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Home from './Home';
-import DataField from './PhotoCollection';
-import ViewDetails from './ViewDetails';
-import MyInfo from './Info';
+import Home from './Components/Home';
+import DataField from './Components/DataInput';
+import ViewDetails from './Components/ViewDetails';
+import MyInfo from './Components/Info';
 const Stack = createNativeStackNavigator();
 
 const App = () => {
