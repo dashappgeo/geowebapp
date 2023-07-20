@@ -1,135 +1,126 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Web Mapping Tutorial - Part 1</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet-measure/dist/leaflet-measure.css" />
-    <style>
-      #map {
-        height: 100vh;
-      }
-    </style>
-  </head>
-  <body>
-    <h1>Web Mapping Tutorial - Part 1</h1>
-    <div id="map"></div>
-    <div id="feature-info">Test</div>
+<head>
+  <title>Web Mapping Tutorial - Part 1</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-measure/dist/leaflet-measure.css" />
+  <style>
+    #map {
+      height: 100vh;
+    }
+  </style>
+</head>
+<body>
+  <h1>Web Mapping Tutorial - Part 1</h1>
+  <div id="map"></div>
+  <div id="feature-info">Test</div>
 
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/leaflet-measure/dist/leaflet-measure.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-      var map = L.map('map').setView([25.505, 92.05], 8);
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-measure/dist/leaflet-measure.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    var map = L.map('map').setView([25.505, 92.05], 8);
 
-      // Base Layer - OpenStreetMap
-      var openStreetMapLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
+    // Base Layer - OpenStreetMap
+    var openStreetMapLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
+    });
+
+    // Adding a Marker
+    var marker = L.marker([25.505, 92.05]);
+    marker.bindPopup("<b>Hello!</b><br>This is a custom marker.").openPopup();
+
+    // Adding a WMS Layer
+    var wmsLayerUrl = 'https://geoserver.nesdr.gov.in/geoserver/eatlas/wms';
+    var wmsLayer = L.tileLayer.wms(wmsLayerUrl, {
+      layers: 'eatlas:manipur_district_boundary', // Change this to the specific layer you want to display from your WMS service
+      format: 'image/png',
+      transparent: true,
+      attribution: 'WMS data &copy; <a href="URL_TO_YOUR_DATA_SOURCE">Data Source</a>'
+    });
+
+    // Adding all the layers to the map
+    openStreetMapLayer.addTo(map);
+    marker.addTo(map);
+    wmsLayer.addTo(map);
+
+    // Group the overlay layers
+    var overlayLayers = {
+      "Marker": marker,
+      "WMS Layer": wmsLayer
+    };
+
+    // Layer control
+    L.control.layers(null, overlayLayers).addTo(map);
+
+    // Measure control
+    L.control.measure({
+      primaryLengthUnit: 'meters', // You can change the primary length unit as per your preference
+      secondaryLengthUnit: 'kilometers', // You can change the secondary length unit as per your preference
+      primaryAreaUnit: 'sqmeters', // You can change the primary area unit as per your preference
+      secondaryAreaUnit: 'hectares' // You can change the secondary area unit as per your preference
+    }).addTo(map);
+
+    // Click event to log coordinates to console
+    // map.on('click', function (e) {
+    //   console.log('Latitude: ' + e.latlng.lat + ', Longitude: ' + e.latlng.lng);
+    // });
+
+    // Right-click event to add marker
+    map.on('contextmenu', function (e) {
+      var newMarker = L.marker(e.latlng).addTo(map);
+      newMarker.bindPopup("New Marker").openPopup();
+    });
+
+    // GetFeatureInfo on hover using jQuery
+    map.on('click', function (e) {
+      var url = getFeatureInfoUrl(e.latlng);
+      $.ajax({
+        url: url,
+        type: 'GET',
+        dataType: 'json', // Change the dataType to 'json'
+        success: function (data) {
+          console.log(data);
+          var featureInfo = parseFeatureInfo(data.features[0].properties);
+          $('#feature-info').html(featureInfo);
+        }
       });
+    });
 
-      // Adding a Marker
-      var marker = L.marker([25.505, 92.05]);
-      marker.bindPopup("<b>Hello!</b><br>This is a custom marker.").openPopup();
-
-      // Adding a WMS Layer
-      var wmsLayerUrl = 'https://www.nesdr.gov.in/igistile/NER_Land_Use_50K_QC_passWS/wms';
-      var wmsLayer = L.tileLayer.wms(wmsLayerUrl, {
-        layers: 'NER_LULC_50K_1st_CYCLE', // Change this to the specific layer you want to display from your WMS service
-        format: 'image/png',
+    // Function to construct the GetFeatureInfo URL
+    function getFeatureInfoUrl(latlng) {
+      var point = map.latLngToContainerPoint(latlng, map.getZoom());
+      var size = map.getSize();
+      var params = {
+        request: 'GetFeatureInfo',
+        service: 'WMS',
+        srs: 'EPSG:4326',
+        styles: '',
         transparent: true,
-        attribution: 'WMS data &copy; <a href="URL_TO_YOUR_DATA_SOURCE">Data Source</a>'
-      });
-
-      // Adding all the layers to the map
-      openStreetMapLayer.addTo(map);
-      marker.addTo(map);
-      wmsLayer.addTo(map);
-
-      // Group the overlay layers
-      var overlayLayers = {
-        "Marker": marker,
-        "WMS Layer": wmsLayer
+        version: wmsLayer.wmsParams.version,
+        format: 'image/png',
+        bbox: map.getBounds().toBBoxString(),
+        height: size.y,
+        width: size.x,
+        layers: wmsLayer.wmsParams.layers,
+        query_layers: wmsLayer.wmsParams.layers,
+        info_format: 'application/json' // Change the info_format to 'application/json'
       };
+      params[params.version === '1.3.0' ? 'i' : 'x'] = point.x;
+      params[params.version === '1.3.0' ? 'j' : 'y'] = point.y;
+      return wmsLayer._url + L.Util.getParamString(params, wmsLayer._url, true);
+    }
 
-      // Layer control
-      L.control.layers(null, overlayLayers).addTo(map);
-
-      // Measure control
-      L.control.measure({
-        primaryLengthUnit: 'meters', // You can change the primary length unit as per your preference
-        secondaryLengthUnit: 'kilometers', // You can change the secondary length unit as per your preference
-        primaryAreaUnit: 'sqmeters', // You can change the primary area unit as per your preference
-        secondaryAreaUnit: 'hectares' // You can change the secondary area unit as per your preference
-      }).addTo(map);
-
-      // Click event to log coordinates to console
-      map.on('click', function (e) {
-        console.log('Latitude: ' + e.latlng.lat + ', Longitude: ' + e.latlng.lng);
-      });
-
-      // Right-click event to add marker
-      map.on('contextmenu', function (e) {
-        var newMarker = L.marker(e.latlng).addTo(map);
-        newMarker.bindPopup("New Marker").openPopup();
-      });
-
-      // GetFeatureInfo on hover using jQuery
-      map.on('mousemove', function (e) {
-        var url = getFeatureInfoUrl(e.latlng);
-        $.ajax({
-          url: url,
-          type: 'GET',
-          dataType: 'xml',
-          success: function (data) {
-            var featureInfo = parseFeatureInfo(data);
-            $('#feature-info').html(featureInfo);
-          }
-        });
-      });
-
-      // Function to construct the GetFeatureInfo URL
-      function getFeatureInfoUrl(latlng) {
-        var point = map.latLngToContainerPoint(latlng, map.getZoom());
-        var size = map.getSize();
-        var params = {
-          request: 'GetFeatureInfo',
-          service: 'WMS',
-          srs: 'EPSG:4326',
-          styles: '',
-          transparent: true,
-          version: wmsLayer.wmsParams.version,
-          format: wmsLayer.wmsParams.format,
-          bbox: map.getBounds().toBBoxString(),
-          height: size.y,
-          width: size.x,
-          layers: wmsLayer.wmsParams.layers,
-          query_layers: wmsLayer.wmsParams.layers,
-          info_format: 'text/xml'
-        };
-        params[params.version === '1.3.0' ? 'i' : 'x'] = point.x;
-        params[params.version === '1.3.0' ? 'j' : 'y'] = point.y;
-        return wmsLayer._url + L.Util.getParamString(params, wmsLayer._url, true);
+    // Function to parse the GetFeatureInfo response and return HTML content
+    function parseFeatureInfo(data) {
+      var content = '';
+      // Customize how feature information is displayed here
+      content += '<h3>Feature Information:</h3>';
+      for (var prop in data) {
+        content += '<p><strong>' + prop + ':</strong> ' + data[prop] + '</p>';
       }
-
-      // Function to parse the GetFeatureInfo response and return HTML content
-      function parseFeatureInfo(data) {
-        var content = '';
-        $(data).find('Layer').each(function () {
-          $(this).find('Feature').each(function () {
-            var featureProps = {};
-            $(this).find('Attribute').each(function () {
-              var attributeName = $(this).attr('name');
-              var attributeValue = $(this).text();
-              featureProps[attributeName] = attributeValue;
-            });
-            // Customize how feature information is displayed here
-            content += '<h3>Feature Information:</h3>';
-            for (var prop in featureProps) {
-              content += '<p><strong>' + prop + ':</strong> ' + featureProps[prop] + '</p>';
-            }
-          });
-        });
-        return content;
-      }
-    </script>
-  </body>
+      return content;
+    }
+  </script>
+</body>
 </html>
